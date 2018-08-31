@@ -1,9 +1,9 @@
 package synth
 
-import "syscall/js"
+import "github.com/tbueno/go-web-synth/dom"
 
 type Oscillator struct {
-	nodeOsc js.Value
+	nodeOsc dom.Node
 }
 
 type WaveType string
@@ -23,11 +23,16 @@ func (o Oscillator) Stop(t float64) {
 	o.nodeOsc.Call("stop", t)
 }
 
+// func (o Oscillator) Play(d float64) {
+// 	now, _ := strconv.ParseFloat(audioCtx.Get("currentTime").String(), 32)
+// 	o.nodeOsc.Call("start", t)
+// }
+
 func NewOscillator(s Synth, t string, f uint) Oscillator {
 	osc := s.Ctx.Call("createOscillator")
 	osc.Set("type", t)
 	osc.Get("frequency").Set("value", f)
-	osc.Call("connect", s.Ctx.Get("destination"))
+	osc.Call("connect", s.Ctx.Get("destination").Value())
 
-	return Oscillator{nodeOsc: osc}
+	return Oscillator{nodeOsc: dom.NewNode(osc)}
 }
