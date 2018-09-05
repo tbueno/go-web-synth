@@ -1,4 +1,4 @@
-package synth
+package audio
 
 import "github.com/tbueno/go-web-synth/dom"
 
@@ -28,11 +28,11 @@ func (o Oscillator) Stop(t float64) {
 // 	o.nodeOsc.Call("start", t)
 // }
 
-func NewOscillator(s Synth, t string, f uint) Oscillator {
-	osc := s.Ctx.Call("createOscillator")
+func NewOscillator(c Context, t string, f uint) Oscillator {
+	osc := c.Ctx.Call("createOscillator")
 	osc.Set("type", t)
 	osc.Get("frequency").Set("value", f)
-	osc.Call("connect", s.Ctx.Get("destination").Value())
+	osc.Call("connect", c.Ctx.Get("destination").Value())
 
 	return Oscillator{nodeOsc: dom.NewNode(osc)}
 }

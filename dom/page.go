@@ -36,7 +36,20 @@ func (n Node) String() string {
 	return n.elem.String()
 }
 
+func (n Node) InnerHTML(content string) {
+	n.elem.Set("innerHTML", content)
+}
+
 type Page struct {
+	doc js.Value
+}
+
+func NewPage() Page {
+	return Page{doc: js.Global().Get("document")}
+}
+
+func (p Page) FindByID(id string) Node {
+	return Node{p.doc.Call("getElementById", id)}
 }
 
 func (p Page) Get(content string) Node {

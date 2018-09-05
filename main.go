@@ -4,20 +4,22 @@ import (
 	"strconv"
 	"syscall/js"
 
+	"github.com/tbueno/go-web-synth/audio"
 	"github.com/tbueno/go-web-synth/dom"
-	"github.com/tbueno/go-web-synth/synth"
 )
 
 func play(i []js.Value) {
-	p := dom.Page{}
+	p := dom.NewPage()
 	audioCtx := p.Get("AudioContext").New()
 
-	s := synth.Synth{Ctx: audioCtx}
-	osc := s.CreateOscillator(synth.Sine, 440)
+	s := audio.Context{Ctx: audioCtx}
+	osc := s.CreateOscillator(audio.Sine, 440)
 	now, _ := strconv.ParseFloat(audioCtx.Get("currentTime").String(), 32)
-
 	osc.Start(now)
-	osc.Stop(now + 0.5)
+	osc.Stop(now + 0.2)
+
+	counter := p.FindByID("counter")
+	counter.InnerHTML("0")
 }
 
 func registerCallbacks() {
