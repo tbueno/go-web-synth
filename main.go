@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strconv"
 	"syscall/js"
 
 	"github.com/tbueno/go-web-synth/audio"
@@ -10,13 +9,16 @@ import (
 
 func play(i []js.Value) {
 	p := dom.NewPage()
-	audioCtx := p.Get("AudioContext").New()
 
-	s := audio.Context{Ctx: audioCtx}
-	osc := s.CreateOscillator(audio.Sine, 440)
-	now, _ := strconv.ParseFloat(audioCtx.Get("currentTime").String(), 32)
-	osc.Start(now)
-	osc.Stop(now + 0.2)
+	audioCtx := audio.Context{Ctx: p.Get("AudioContext").New()}
+	osc := audioCtx.CreateOscillator()
+
+	osc.Connect(audioCtx.Destination())
+
+	osc.Type(audio.Sawtooth)
+	osc.Frequency(440)
+
+	osc.Play(0.2)
 
 	counter := p.FindByID("counter")
 	counter.InnerHTML("0")
